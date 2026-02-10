@@ -1,0 +1,426 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beyond The Maps - Financial Suite</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <aside class="sidebar">
+        <div class="logo-section">
+            <div class="logo-circle" syle="background-image: url('logo.png')t;"></div>
+            <div class="logo-text">Beyond The Maps<br><small>TRAVEL & TOURS</small></div>
+        </div>
+        
+        <nav>   
+            <ul>
+                <li class="nav-item active" onclick="showPage('dashboard', this)">📊 DASHBOARD</li>
+                
+                <li class="nav-header">COLLECTION ▾</li>
+                <ul class="sub-menu">
+                    <li onclick="showPage('collection', this)">Client Payments</li>
+                    <li onclick="showPage('modes', this)">Payment Modes</li>
+                    <li onclick="showPage('daily', this)">Daily Summary</li>
+                    <li onclick="showPage('collection-reports', this)">Collection Reports</li>
+                </ul>
+
+                <li class="nav-header">BUDGET MANAGEMENT ▾</li>
+                <ul class="sub-menu">
+                    <li onclick="showPage('projected-income', this)">Projected Income</li>
+                    <li onclick="showPage('actual-vs-budget', this)">Actual vs. Budget</li>
+                    <li onclick="showPage('variance-analysis', this)">Variance Analysis</li>
+                    <li onclick="showPage('budget-monitoring', this)">Budget Monitoring</li>
+                </ul>
+
+                <li class="nav-header">Accounts Payable (AP) and Accounts Receivable (AR) ▾</li>
+                <ul class="sub-menu">
+                    <li onclick="showPage('ar-collections', this)">Accounts Receivable (AR) Collections</li>
+                    <li onclick="showPage('ap-monitoring', this)">Accounts Payable (AP) Monitoring</li>
+                    <li onclick="showPage('expense-reports', this)">Expense Report Processing</li>
+                    <li onclick="showPage('aging-report', this)">Aging Report</li>
+                </ul>
+
+                <li class="nav-header">GENERAL LEDGERS ▾</li>
+                <ul class="sub-menu">
+                    <li onclick="showPage('ledger', this)">Journal Posting</li>
+                    <li onclick="showPage('mapping', this)">Account Mapping</li>
+                    <li onclick="showPage('reconciliation', this)">Data Reconciliation</li>
+                    <li onclick="showPage('audit-prep', this)">Audit Preparation</li>
+                </ul>
+
+                <li class="nav-header">DOCUMENT MANAGEMENT ▾</li>
+                <ul class="sub-menu">
+                    <li onclick="showPage('financial-storage', this)">Financial Storage</li>
+                    <li onclick="showPage('tagging', this)">Tagging & Metadata</li>
+                    <li onclick="showPage('audit-trail', this)">Audit Trail</li>
+                    <li onclick="showPage('compliance', this)">Compliance</li>
+                </ul>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <header class="top-bar">
+            <h2 id="current-page-title">Dashboard</h2>
+           <div class="user-pill">
+            Admin User 👤
+            <a href="logout.php" class="logout-btn">Logout</a>
+</div>
+        </header>
+
+        <section id="dashboard" class="page-section active">
+            <div class="cards-container">
+                <div class="card card-green"><h3>Cash Flow</h3><div class="amount">₱12,500</div></div>
+                <div class="card card-orange"><h3>AR Balance</h3><div class="amount">₱85,250</div></div>
+                <div class="card card-red"><h3>AP Balance</h3><div class="amount">₱52,400</div></div>
+            </div>
+            <div class="box"><h3>Financial Overview</h3><p>Manage Travel Partner payables and Client receivables.</p></div>
+        </section>
+
+        <section id="tagging" class="page-section">
+            <div class="box accent-teal">
+                <h3>Tagging & Metadata</h3>
+                <p><small>Assign labels and searchable metadata to archived documents for easier retrieval.</small></p>
+                <div class="form-grid" style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label>Select Document</label>
+                        <select>
+                            <option>Q1_Tax_Returns_2026.pdf</option>
+                            <option>Jan_Payroll_Summary.xlsx</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Add New Tag</label>
+                        <input type="text" placeholder="e.g. Urgent, BIR, 2026">
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: flex-end;">
+                        <button class="btn-primary">Apply Metadata</button>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>Document</th><th>Current Tags</th><th>Status</th><th>Last Modified</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Q1_Tax_Returns_2026.pdf</td>
+                            <td><span class="tag">#Tax2026</span><span class="tag">#Compliance</span></td>
+                            <td><span class="status-badge status-paid">Indexed</span></td>
+                            <td>02/10/2026</td>
+                        </tr>
+                        <tr>
+                            <td>Jan_Payroll_Summary.xlsx</td>
+                            <td><span class="tag">#Internal</span><span class="tag">#HR</span></td>
+                            <td><span class="status-badge status-paid">Indexed</span></td>
+                            <td>01/31/2026</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="financial-storage" class="page-section">
+            <div class="box accent-teal">
+                <h3>Financial Storage</h3>
+                <p><small>Secure repository for invoices, receipts, and fiscal audit documents.</small></p>
+                <div class="form-grid" style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <div class="form-group"><label>Upload Document</label><input type="file"></div>
+                    <div class="form-group">
+                        <label>Document Category</label>
+                        <select>
+                            <option>Tax Invoices</option>
+                            <option>Payment Receipts</option>
+                            <option>Bank Statements</option>
+                            <option>Audit Logs</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: flex-end;">
+                        <button class="btn-primary">Upload to Archive</button>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>Document Name</th><th>Category</th><th>Date Uploaded</th><th>Size</th><th>Action</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Q1_Tax_Returns_2026.pdf</td><td>Tax Invoices</td><td>02/10/2026</td><td>1.2 MB</td><td><button class="btn-primary" style="padding: 5px 10px; font-size: 0.7rem;">Download</button></td></tr>
+                        <tr><td>Jan_Payroll_Summary.xlsx</td><td>Audit Logs</td><td>01/31/2026</td><td>450 KB</td><td><button class="btn-primary" style="padding: 5px 10px; font-size: 0.7rem;">Download</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="audit-trail" class="page-section">
+            <div class="box accent-teal">
+                <h3>Document Audit Trail</h3>
+                <p><small>Track activities and history of document modifications for security and compliance.</small></p>
+                <table>
+                    <thead>
+                        <tr><th>Timestamp</th><th>User</th><th>Action</th><th>Document</th><th>Notes</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>02/10/2026 09:15 AM</td><td>Admin User</td><td><span class="status-badge" style="background: #e3f2fd; color: #1976d2;">Upload</span></td><td>Q1_Tax_Returns_2026.pdf</td><td>Initial filing</td></tr>
+                        <tr><td>02/10/2026 10:30 AM</td><td>Admin User</td><td><span class="status-badge" style="background: #f1f8e9; color: #33691e;">Metadata Update</span></td><td>Q1_Tax_Returns_2026.pdf</td><td>Added compliance tags</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="compliance" class="page-section">
+            <div class="box accent-teal">
+                <h3>Compliance & Regulatory Check</h3>
+                <p><small>Ensure all financial documents meet government and internal policy requirements.</small></p>
+                <div class="form-grid" style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label>Compliance Type</label>
+                        <select><option>Tax Compliance (BIR)</option><option>SEC Reporting</option><option>Internal Audit Protocol</option><option>Data Privacy (DPA)</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Review Status</label>
+                        <select><option>Pending Review</option><option>Under Investigation</option><option>Cleared/Compliant</option></select>
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: flex-end;"><button class="btn-primary">Verify Compliance</button></div>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>Requirement</th><th>Category</th><th>Deadline</th><th>Filing Status</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Annual Income Tax Return</td><td>BIR Compliance</td><td>04/15/2026</td><td><span class="status-badge status-pending">In Progress</span></td></tr>
+                        <tr><td>Quarterly VAT Filing</td><td>BIR Compliance</td><td>04/25/2026</td><td><span class="status-badge status-paid">Scheduled</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="variance-analysis" class="page-section">
+            <div class="box accent-teal">
+                <h3>Variance Analysis</h3>
+                <p><small>Detailed breakdown of financial discrepancies and justification logs.</small></p>
+                <table>
+                    <thead>
+                        <tr><th>Reference ID</th><th>Category</th><th>Type</th><th>Variance Amount</th><th>Reason/Justification</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>VAR-001</td><td>Office Supplies</td><td style="color: var(--red);">Negative</td><td>-₱2,400</td><td>Emergency equipment repair</td></tr>
+                        <tr><td>VAR-002</td><td>Flight Markups</td><td style="color: var(--green);">Positive</td><td>+₱5,000</td><td>Higher volume in holiday season</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="budget-monitoring" class="page-section">
+            <div class="box accent-teal">
+                <h3>Departmental Budget Monitoring</h3>
+                <p><small>Track utilization of allocated funds per operational category.</small></p>
+                <div class="modes-grid" style="margin-top: 20px;">
+                    <div class="box" style="margin-bottom:0; border: 1px solid #eee;">
+                        <div style="display:flex; justify-content:space-between;"><strong>Operations</strong><span>75% Used</span></div>
+                        <div class="progress-bg"><div class="progress-fill" style="width: 75%;"></div></div>
+                        <p style="font-size:0.8rem; margin-top:10px;">Spent: ₱150,000 / ₱200,000</p>
+                    </div>
+                    <div class="box" style="margin-bottom:0; border: 1px solid #eee;">
+                        <div style="display:flex; justify-content:space-between;"><strong>Marketing</strong><span>40% Used</span></div>
+                        <div class="progress-bg"><div class="progress-fill" style="width: 40%; background: var(--green);"></div></div>
+                        <p style="font-size:0.8rem; margin-top:10px;">Spent: ₱20,000 / ₱50,000</p>
+                    </div>
+                </div>
+                <h4 style="margin-top:30px;">Detailed Allocation Log</h4>
+                <table>
+                    <thead>
+                        <tr><th>Department</th><th>Allocated (₱)</th><th>Utilized (₱)</th><th>Remaining (₱)</th><th>Alert</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Human Resources</td><td>₱100,000</td><td>₱85,000</td><td>₱15,000</td><td><span class="status-badge status-pending">Nearing Limit</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="projected-income" class="page-section">
+            <div class="box accent-teal">
+                <h3>Projected Income Forecasting</h3>
+                <p><small>Estimate future revenue based on pending bookings (D2) and confirmed itineraries.</small></p>
+                <div class="form-grid">
+                    <div class="form-group"><label>Forecast Month</label><input type="month" value="2026-02"></div>
+                    <div class="form-group"><label>Confidence Level</label><select><option>High (Confirmed Bookings)</option><option>Medium (Quotes Sent)</option><option>Low (Inquiries)</option></select></div>
+                    <div class="form-group" style="display: flex; align-items: flex-end;"><button class="btn-primary">Generate Forecast</button></div>
+                </div>
+                <div class="cards-container" style="margin-top: 25px;">
+                    <div class="box" style="background: #e3f2fd; border-left: 5px solid #2196f3;"><label style="font-size: 0.75rem; font-weight: bold; color: #1976d2;">PIPELINE SALES</label><div style="font-size: 1.8rem; font-weight: bold;">₱342,000.00</div></div>
+                    <div class="box" style="background: #e8f5e9; border-left: 5px solid #4caf50;"><label style="font-size: 0.75rem; font-weight: bold; color: #2e7d32;">EST. GROSS PROFIT</label><div style="font-size: 1.8rem; font-weight: bold;">₱51,300.00</div></div>
+                    <div class="box" style="background: #fff3e0; border-left: 5px solid #ff9800;"><label style="font-size: 0.75rem; font-weight: bold; color: #ef6c00;">AVG. BOOKING VALUE</label><div style="font-size: 1.8rem; font-weight: bold;">₱28,500.00</div></div>
+                </div>
+                <h4>Upcoming Revenue Breakdown</h4>
+                <table>
+                    <thead><tr><th>Service Category</th><th>Pending Vol.</th><th>Projected Revenue</th><th>Est. Margin</th></tr></thead>
+                    <tbody><tr><td>International Tour Packages</td><td>8 Units</td><td>₱240,000</td><td>₱36,000</td></tr><tr><td>Domestic Flight Bookings</td><td>15 Units</td><td>₱75,000</td><td>₱7,500</td></tr><tr><td>Visa Assistance Fees</td><td>12 Units</td><td>₱27,000</td><td>₱7,800</td></tr></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="actual-vs-budget" class="page-section">
+            <div class="box accent-teal">
+                <h3>Actual vs. Budget Performance</h3>
+                <p><small>Comparison of real-time expenditures and revenue against set financial targets.</small></p>
+                <table>
+                    <thead><tr><th>Category</th><th>Budgeted (₱)</th><th>Actual (₱)</th><th>Variance (₱)</th><th>Status</th></tr></thead>
+                    <tbody>
+                        <tr><td>Tour Operations Revenue</td><td>₱500,000</td><td>₱485,000</td><td style="color: var(--red);">-₱15,000</td><td><span class="status-badge status-pending">⚠️ Under Target</span></td></tr>
+                        <tr><td>Marketing & Advertising</td><td>₱30,000</td><td>₱28,500</td><td style="color: var(--green);">+₱1,500</td><td><span class="status-badge status-paid">✅ Within Budget</span></td></tr>
+                        <tr><td>Administrative Expenses</td><td>₱15,000</td><td>₱18,200</td><td style="color: var(--red);">-₱3,200</td><td><span class="status-badge" style="background:#ffdada; color:#ff5252;">❌ Over Budget</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="audit-prep" class="page-section">
+            <div class="box accent-teal">
+                <h3>Audit Preparation & Reporting</h3>
+                <p><small>Generate summarized financial reports for Management and Auditors based on General Ledger (D4) and Balances (D5).</small></p>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Report Type</label>
+                        <select><option>Financial Performance Summary</option><option>General Ledger Audit Trail</option><option>Balance Sheet (D5 Summary)</option><option>Transaction History (D3 to D4 Mapping)</option></select>
+                    </div>
+                    <div class="form-group"><label>Fiscal Period</label><input type="month" value="2026-01"></div>
+                    <div class="form-group" style="display: flex; align-items: flex-end;"><button class="btn-primary">Generate Report</button></div>
+                </div>
+                <div class="box" style="margin-top: 25px; background: #fafafa; border: 1px solid #ddd;">
+                    <h4>Pending Audit Reviews</h4>
+                    <table>
+                        <thead><tr><th>Report ID</th><th>Source</th><th>Date Generated</th><th>Auditor Status</th></tr></thead>
+                        <tbody>
+                            <tr><td>AUD-2026-001</td><td>General Ledger (D4)</td><td>01/06/2026</td><td><span class="status-badge status-pending">Under Review</span></td></tr>
+                            <tr><td>AUD-2026-002</td><td>Balances (D5)</td><td>01/05/2026</td><td><span class="status-badge status-paid">Verified</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="reconciliation" class="page-section">
+            <div class="box accent-teal">
+                <h3>Data Reconciliation Dashboard</h3>
+                <p><small>Verifying synchronization between Payment Records (D3), General Ledger (D4), and Balances (D5).</small></p>
+                <div class="cards-container" style="margin-top: 20px;">
+                    <div class="box" style="margin-bottom:0; background: #f8f9fa;"><label style="font-size: 0.7rem; color: #666;">PAYMENT RECORDS (D3)</label><div style="font-size: 1.5rem; font-weight: bold;">₱12,500.00</div></div>
+                    <div class="box" style="margin-bottom:0; background: #f8f9fa;"><label style="font-size: 0.7rem; color: #666;">GENERAL LEDGER (D4)</label><div style="font-size: 1.5rem; font-weight: bold;">₱12,500.00</div></div>
+                    <div class="box" style="margin-bottom:0; background: #f8f9fa;"><label style="font-size: 0.7rem; color: #666;">VARIANCE</label><div style="font-size: 1.5rem; font-weight: bold; color: var(--green);">₱0.00</div></div>
+                </div>
+                <div class="box" style="margin-top: 20px; border: 1px dashed #ddd;">
+                    <h4>Verification Logs (D5)</h4>
+                    <table>
+                        <thead><tr><th>Reference</th><th>System Source</th><th>GL Target</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr><td>D3-PAY-001</td><td>Client Collection</td><td>JE-2026-001</td><td><span class="status-badge status-paid">Matched</span></td></tr>
+                            <tr><td>D3-PAY-002</td><td>Partner Payout</td><td>JE-2026-005</td><td><span class="status-badge status-paid">Matched</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="mapping" class="page-section">
+            <div class="box accent-teal">
+                <h3>Account Mapping</h3>
+                <div class="form-grid">
+                    <div class="form-group"><label>System Action</label><select><option>Client Payment Received</option><option>Partner Commission Payout</option></select></div>
+                    <div class="form-group"><label>Map to GL Account</label><select><option>1010 - Cash in Bank</option><option>1200 - Accounts Receivable</option></select></div>
+                    <div class="form-group"><label>Entry Type</label><select><option>Debit</option><option>Credit</option></select></div>
+                </div>
+                <button class="btn-primary" style="margin-top: 15px;">Save Mapping</button>
+            </div>
+        </section>
+
+        <section id="ledger" class="page-section">
+            <div class="box accent-teal">
+                <h3>Manual Journal Entry</h3>
+                <div class="form-grid">
+                    <div class="form-group"><label>Entry Date</label><input type="date"></div>
+                    <div class="form-group"><label>Reference #</label><input type="text" placeholder="JE-2026-001"></div>
+                </div>
+                <table>
+                    <thead><tr><th>Account Name</th><th>Debit (₱)</th><th>Credit (₱)</th><th>Memo</th></tr></thead>
+                    <tbody><tr><td><select><option>Cash in Bank</option><option>Accounts Receivable</option></select></td><td><input type="number" placeholder="0.00"></td><td><input type="number" placeholder="0.00" disabled></td><td><input type="text" placeholder="Note..."></td></tr></tbody>
+                </table>
+                <button class="btn-primary" style="margin-top: 15px;">Post to General Ledger</button>
+            </div>
+        </section>
+
+        <section id="expense-reports" class="page-section">
+            <div class="box accent-teal">
+                <h3>Expense Report Processing</h3>
+                <div class="form-grid">
+                    <div class="form-group"><label>Expense Date</label><input type="date"></div>
+                    <div class="form-group"><label>Category</label><select><option>Flight Booking</option><option>Hotel</option></select></div>
+                    <div class="form-group"><label>Payee/Vendor</label><input type="text"></div>
+                    <div class="form-group"><label>Amount (₱)</label><input type="number"></div>
+                </div>
+                <button class="btn-primary" style="margin-top: 15px;">Submit Expense</button>
+            </div>
+        </section>
+
+        <section id="aging-report" class="page-section">
+            <div class="box accent-teal">
+                <h3>Aging Report Summary</h3>
+                <table>
+                    <thead><tr><th>Client</th><th>Current</th><th>1-30 Days</th><th>31-60 Days</th><th>Total</th></tr></thead>
+                    <tbody><tr><td>Amen, Joligem</td><td>₱0</td><td>₱10,000</td><td>₱0</td><td>₱10,000</td></tr></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="collection" class="page-section">
+            <div class="box accent-teal">
+                <h3>Process New Collection (Process 1.0)</h3>
+                <div class="form-grid">
+                    <div class="form-group"><label>Client Name</label><input type="text"></div>
+                    <div class="form-group"><label>Booking Ref</label><input type="text"></div>
+                    <div class="form-group"><label>Amount (₱)</label><input type="number"></div>
+                </div>
+                <button class="btn-primary" style="margin-top: 15px;">Post Payment Record (D3)</button>
+            </div>
+        </section>
+
+        <section id="daily" class="page-section">
+            <div class="box accent-teal">
+                <h3>Daily Collection Summary</h3>
+                <div class="cards-container" style="grid-template-columns: repeat(4, 1fr);">
+                    <div class="card" style="background:#487eb0;">Today's Total<div class="amount" style="font-size:1.2rem;">₱12,500</div></div>
+                    <div class="card" style="background:#2ecc71;">GCash<div class="amount" style="font-size:1.2rem;">₱7,500</div></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="modes" class="page-section">
+            <div class="box accent-teal">
+                <h3>Payment Modes Setup</h3>
+                <div class="modes-grid">
+                    <div class="mode-card"><span>💵</span><strong>Cash</strong><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+                    <div class="mode-card"><span>📱</span><strong>GCash</strong><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ar-collections" class="page-section"><div class="box"><h3>Accounts Receivable (AR) Collections Ledger</h3></div></section>
+        <section id="ap-monitoring" class="page-section"><div class="box"><h3>Accounts Payable (AP) Monitoring</h3></div></section>
+        <section id="collection-reports" class="page-section"><div class="box"><h3>Reports</h3></div></section>
+    </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

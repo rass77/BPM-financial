@@ -97,3 +97,16 @@ input:checked + .slider:before { transform: translateX(18px); }
     line-height: 1.1;
     color: white;
 }
+.logout-btn {
+    margin-left: 12px;
+    padding: 5px 10px;
+    background: #e74c3c;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 15px;
+    font-size: 0.75rem;
+}
+
+.logout-btn:hover {
+    background: #c0392b;
+}
